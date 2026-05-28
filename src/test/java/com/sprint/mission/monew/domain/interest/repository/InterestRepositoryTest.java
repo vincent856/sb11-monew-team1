@@ -9,17 +9,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import com.sprint.mission.monew.common.config.QuerydslConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import(QuerydslConfig.class)
 class InterestRepositoryTest {
 
-  @Autowired InterestRepository interestRepository;
+  @Autowired
+  InterestRepository interestRepository;
 
   @BeforeEach
   void setUp() {
@@ -44,7 +48,9 @@ class InterestRepositoryTest {
       // then
       assertThat(found).isPresent();
       assertThat(found.get().getName()).isEqualTo("인공지능");
-      assertThat(found.get().getKeywords()).containsExactlyInAnyOrderElementsOf(keywords);
+      assertThat(found.get().getKeywords())
+          .extracting(com.sprint.mission.monew.domain.interest.entity.InterestKeyword::getKeyword)
+          .containsExactlyInAnyOrderElementsOf(keywords);
     }
   }
 }
